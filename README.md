@@ -1,6 +1,3 @@
-# 2025 Roofscape
+# Temporary repo for testing until the AHRS updates
 
-Set up the Git hooks by running:
-```sh
-$ ./setup
-```
+### ars
