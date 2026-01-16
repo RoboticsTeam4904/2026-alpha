@@ -12,8 +12,6 @@ import org.usfirst.frc4904.robot.humaninterface.drivers.SwerveGain;
 import org.usfirst.frc4904.robot.humaninterface.operators.DefaultOperator;
 import org.usfirst.frc4904.standard.CommandRobotBase;
 
-import com.revrobotics.jni.CANSparkJNI;
-
 import java.util.function.Supplier;
 
 public class Robot extends CommandRobotBase {

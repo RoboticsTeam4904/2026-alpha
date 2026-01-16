@@ -2,12 +2,16 @@ package org.usfirst.frc4904.robot.swerve;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc4904.standard.Util;
 import org.usfirst.frc4904.standard.custom.CustomDutyCycleEncoder;
 import org.usfirst.frc4904.standard.custom.motorcontrollers.SmartMotorController;
 
 public class SwerveModule {
+
+    public final String name;
+
     private final DriveController drive;
     private final RotationController rotation;
 
@@ -15,11 +19,15 @@ public class SwerveModule {
     private double theta = 0;
 
     public SwerveModule(
+        String name,
         SmartMotorController driveMotor,
         SmartMotorController rotMotor,
         CustomDutyCycleEncoder rotEncoder,
         Translation2d direction
     ) {
+        this.name = name;
+
+        // TODO remove (or maybe keep for comp?)
         if (driveMotor != null) {
             drive = new DriveController(driveMotor);
         } else {
@@ -45,6 +53,8 @@ public class SwerveModule {
         // TODO run this faster than 50hz - run pid on motor
         boolean flip = rotation.rotateToward(theta);
         if (drive != null) drive.setMagnitude(flip ? -magnitude : magnitude);
+
+        SmartDashboard.putNumber(name + " rotation: ", rotation.encoder.get());
     }
 }
 
@@ -61,8 +71,8 @@ class RotationController {
 
     private static final double MAX_VOLTAGE = 4;
 
-    public final SmartMotorController motor;
-    private final CustomDutyCycleEncoder encoder;
+    final SmartMotorController motor;
+    final CustomDutyCycleEncoder encoder;
 
     private final Translation2d direction;
 

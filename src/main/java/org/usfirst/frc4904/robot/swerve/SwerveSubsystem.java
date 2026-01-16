@@ -43,6 +43,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * Zero the rotation encoders for all swerve modules.
      */
     public void zero() {
+        System.out.println("zeroed");
         for (var module : modules) {
             module.zero();
         }

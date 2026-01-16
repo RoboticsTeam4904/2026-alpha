@@ -26,6 +26,9 @@ public class DefaultOperator extends Operator {
         // opJoystick.button11.onFalse(Component.shooter.c_stopShoot());
 
         xyJoystick.button1.onTrue(new InstantCommand(() -> Component.chassis.resetOdometry()));
-        xyJoystick.button2.onTrue(new InstantCommand(() -> Component.chassis.zero()));
+        xyJoystick.button2.onTrue(new InstantCommand(() -> Component.chassis.zero()) {
+            @Override public boolean runsWhenDisabled() { return true; };
+        });
     }
+    
 }
