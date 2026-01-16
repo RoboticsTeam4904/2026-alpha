@@ -1,20 +1,18 @@
 package org.usfirst.frc4904.robot;
 
-import com.revrobotics.jni.CANSparkJNI;
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-
-import org.usfirst.frc4904.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc4904.robot.swerve.SwerveModule;
 import org.usfirst.frc4904.robot.swerve.SwerveSubsystem;
+import org.usfirst.frc4904.robot.vision.GoogleTagManager;
+import org.usfirst.frc4904.robot.vision.VisionSubsystem;
 import org.usfirst.frc4904.standard.custom.CustomDutyCycleEncoder;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandXbox;
@@ -58,6 +56,7 @@ public class RobotMap {
 
         // subsystems
         public static SwerveSubsystem chassis;
+        public static VisionSubsystem vision;
 
         // public static ShooterSubsystem shooter;
 
@@ -131,15 +130,15 @@ public class RobotMap {
             )
         );
 
-        // Component.wheelMotor = new SparkMax(32, MotorType.kBrushless);
+        Component.vision = new VisionSubsystem(
+            new GoogleTagManager(),
+            new Transform2d[] {
+                new Transform2d(Units.inchesToMeters(8), Units.inchesToMeters(-10.6), Rotation2d.kZero),
+                new Transform2d(Units.inchesToMeters(8), Units.inchesToMeters(10.6), Rotation2d.kZero)
 
-        // Component.wheelMotor = new CustomCANSparkMax(
-        //     32,
-        //     SparkLowLevel.MotorType.kBrushless,
-        //     true
-        // );
-
-        // Component.shooter = new ShooterSubsystem(Component.wheelMotor);
+                // new Transform2d(Units.inchesToMeters(0), Units.inchesToMeters(0), Rotation2d.kZero)
+            }
+        );
 
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(
             Port.HumanInput.xyJoystickPort,
