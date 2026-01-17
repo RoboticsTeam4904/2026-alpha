@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package org.usfirst.frc4904.robot;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.usfirst.frc4904.robot.RobotMap.Component;
 import org.usfirst.frc4904.robot.humaninterface.drivers.SwerveGain;
@@ -97,6 +98,12 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void alwaysExecute() {
+        double now = Timer.getFPGATimestamp();
+        if (now - lastLogTime >= 1) {
+            lastLogTime = now;
+            System.out.println("WE MAY HAVE FOUND A TAG: " + Component.gtm.getTags());
+            // SmartDashboard.putNumberArray("tag ids: ", Component.gtm.getTags().stream().mapToDouble(tag -> tag.id()).toArray());
+        }
         // logging stuff cannot go here. turn back now
     }
 }

@@ -25,7 +25,7 @@ public class GoogleTagManager {
 
     public List<Tag> getTags() {
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("dauntless.local:8080/api/tags"))
+            .uri(URI.create("http://10.49.4.203:8000/api/tags"))
             .GET()
             .build();
 
@@ -36,8 +36,8 @@ public class GoogleTagManager {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             json = response.body();
-        } catch (Exception e) {
-            System.out.println("google tag manager fetching error!!!");
+        } catch (IOException | InterruptedException e) {
+            System.out.println("google tag manager fetching error!!!\n" + e.getClass().getName() + ": " + e.getMessage());
             return tags;
         }
 
@@ -46,10 +46,11 @@ public class GoogleTagManager {
             JsonNode root = mapper.readTree(json);
 
             for (JsonNode el : root) {
-                double[] pos = mapper.treeToValue(el.path("pos"), double[].class);
+                double[] pos    = mapper.treeToValue(el.path("pos"), double[].class);
+                JsonNode idPath = el    .path       (        "id"                  );
 
                 Tag tag = new Tag(
-                    el.path("id").asInt(),
+                    idPath.isNull() ? -1 : idPath.asInt(),
                     Rotation2d.fromRotations(el.path("rot").asDouble()),
                     new Translation3d(pos[0], pos[1], pos[2]),
                     0

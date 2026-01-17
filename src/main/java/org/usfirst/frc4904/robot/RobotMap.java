@@ -58,6 +58,8 @@ public class RobotMap {
         public static SwerveSubsystem chassis;
         public static VisionSubsystem vision;
 
+        public static GoogleTagManager gtm;
+
         // public static ShooterSubsystem shooter;
 
         // public static CustomCANSparkMax wheelMotor;
@@ -135,7 +137,7 @@ public class RobotMap {
         );
 
         Component.vision = new VisionSubsystem(
-            new GoogleTagManager(),
+            Component.gtm = new GoogleTagManager(),
             new Transform2d[] {
                 new Transform2d(Units.inchesToMeters(8), Units.inchesToMeters(-10.6), Rotation2d.kZero),
                 new Transform2d(Units.inchesToMeters(8), Units.inchesToMeters(10.6), Rotation2d.kZero)
