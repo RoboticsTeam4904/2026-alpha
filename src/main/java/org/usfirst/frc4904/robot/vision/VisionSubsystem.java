@@ -21,6 +21,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+// TODO update javadoc
+
 /** Sponsored by Claude™ 3.7 Sonnet by Anthropic® */
 public class VisionSubsystem extends SubsystemBase {
     public enum TagGroup {
@@ -263,6 +265,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         results.sort(Comparator.comparingDouble(result -> {
             Translation3d transform = result.pos();
+            // TODO check XYZ
             return Math.pow(transform.getX(), 2) + Math.pow(transform.getY(), 2);
         }));
 
@@ -384,7 +387,7 @@ public class VisionSubsystem extends SubsystemBase {
         // System.out.println("VISION OFFSET 1: X " + offset.getX() + " Y " + offset.getY());
 
         var command = new SequentialCommandGroup(
-            this.runOnce(() -> startPositioning(targetTagIds, offset)),
+            runOnce(() -> startPositioning(targetTagIds, offset)),
             new WaitWhileCommand(this::isPositioning)
         ) {
             @Override
@@ -403,6 +406,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Command c_stop() {
-        return new InstantCommand(() -> this.stopPositioning("Stop command", false));
+        return runOnce(() -> stopPositioning("Stop command", false));
     }
 }

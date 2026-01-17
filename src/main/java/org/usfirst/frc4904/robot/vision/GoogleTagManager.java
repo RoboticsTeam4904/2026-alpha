@@ -46,13 +46,13 @@ public class GoogleTagManager {
             JsonNode root = mapper.readTree(json);
 
             for (JsonNode el : root) {
-                double[] pos    = mapper.treeToValue(el.path("pos"), double[].class);
-                JsonNode idPath = el    .path       (        "id"                  );
+                double[] pos = mapper.treeToValue(el.path("pos"), double[].class);
+                JsonNode idPath = el.path("id");
 
                 Tag tag = new Tag(
                     idPath.isNull() ? -1 : idPath.asInt(),
                     Rotation2d.fromRotations(el.path("rot").asDouble()),
-                    new Translation3d(pos[0], pos[1], pos[2]),
+                    new Translation3d(pos[2], pos[0], pos[1]),
                     0
                 );
 
