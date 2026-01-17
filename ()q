@@ -1,0 +1,138 @@
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/Robot.java b/src/main/java/org/usfirst/frc4904/robot/Robot.java[m
+[1mindex cdbbb20..b8abf2d 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/Robot.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/Robot.java[m
+[36m@@ -101,7 +101,8 @@[m [mpublic class Robot extends CommandRobotBase {[m
+         double now = Timer.getFPGATimestamp();[m
+         if (now - lastLogTime >= 1) {[m
+             lastLogTime = now;[m
+[31m-            System.out.println("WE MAY HAVE FOUND A TAG: " + Component.gtm.getTags());[m
+[32m+[m[32m            var tags = Component.gtm.getTags();[m
+[32m+[m[32m            if (tags.size() > 0) System.out.println("WE FOUND A TAG: " + tags);[m
+             // SmartDashboard.putNumberArray("tag ids: ", Component.gtm.getTags().stream().mapToDouble(tag -> tag.id()).toArray());[m
+         }[m
+         // logging stuff cannot go here. turn back now[m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/RobotMap.java b/src/main/java/org/usfirst/frc4904/robot/RobotMap.java[m
+[1mindex 5d38b76..c6c6030 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/RobotMap.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/RobotMap.java[m
+[36m@@ -111,28 +111,28 @@[m [mpublic class RobotMap {[m
+                 new CANTalonFX(2),[m
+                 new CANTalonFX(17),[m
+                 new CustomDutyCycleEncoder(Port.PWM.ENCODER_FL),[m
+[31m-                new Translation2d(-1, 1)[m
+[32m+[m[32m                new Translation2d(1, 1)[m
+             ),[m
+             new SwerveModule([m
+                 "front right",[m
+                 new CANTalonFX(3), //   3[m
+                 new CANTalonFX(15), // 15[m
+                 new CustomDutyCycleEncoder(Port.PWM.ENCODER_FR),[m
+[31m-                new Translation2d(1, 1)[m
+[32m+[m[32m                new Translation2d(-1, 1)[m
+             ),[m
+             new SwerveModule([m
+                 "back left",[m
+                 new CANTalonFX(4), // 4[m
+                 new CANTalonFX(18), // 18[m
+                 new CustomDutyCycleEncoder(Port.PWM.ENCODER_BL),[m
+[31m-                new Translation2d(-1, -1)[m
+[32m+[m[32m                new Translation2d(1, -1)[m
+             ),[m
+             new SwerveModule([m
+                 "back right",[m
+                 new CANTalonFX(1), // 1[m
+                 new CANTalonFX(16), // 16[m
+                 new CustomDutyCycleEncoder(Port.PWM.ENCODER_BR),[m
+[31m-                new Translation2d(1, -1)[m
+[32m+[m[32m                new Translation2d(-1, -1)[m
+             )[m
+         );[m
+ [m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/humaninterface/operators/DefaultOperator.java b/src/main/java/org/usfirst/frc4904/robot/humaninterface/operators/DefaultOperator.java[m
+[1mindex e1660c3..28c6c38 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/humaninterface/operators/DefaultOperator.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/humaninterface/operators/DefaultOperator.java[m
+[36m@@ -2,6 +2,7 @@[m [mpackage org.usfirst.frc4904.robot.humaninterface.operators;[m
+ [m
+ import org.usfirst.frc4904.robot.RobotMap;[m
+ import org.usfirst.frc4904.robot.RobotMap.Component;[m
+[32m+[m[32mimport org.usfirst.frc4904.robot.vision.VisionSubsystem.TagGroup;[m
+ import org.usfirst.frc4904.standard.humaninput.Operator;[m
+ [m
+ import edu.wpi.first.wpilibj2.command.InstantCommand;[m
+[36m@@ -22,6 +23,8 @@[m [mpublic class DefaultOperator extends Operator {[m
+         var xyJoystick = RobotMap.HumanInput.Driver.xyJoystick;[m
+         var turnJoystick = RobotMap.HumanInput.Driver.turnJoystick;[m
+ [m
+[32m+[m[32m        turnJoystick.button1.whileTrue(Component.vision.c_align(TagGroup.ANY, 0));[m
+[32m+[m
+         // opJoystick.button11.whileTrue(Component.shooter.c_shoot());[m
+         // opJoystick.button11.onFalse(Component.shooter.c_stopShoot());[m
+ [m
+[36m@@ -30,5 +33,5 @@[m [mpublic class DefaultOperator extends Operator {[m
+             @Override public boolean runsWhenDisabled() { return true; };[m
+         });[m
+     }[m
+[31m-    [m
+[32m+[m
+ }[m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/swerve/SwerveModule.java b/src/main/java/org/usfirst/frc4904/robot/swerve/SwerveModule.java[m
+[1mindex 3e2b839..1e88b6d 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/swerve/SwerveModule.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/swerve/SwerveModule.java[m
+[36m@@ -84,10 +84,7 @@[m [mclass RotationController {[m
+         Translation2d direction[m
+     ) {[m
+         this.motor = motor;[m
+[31m-[m
+         this.encoder = encoder;[m
+[31m-        System.out.println("ENC HALP "+encoder.get());[m
+[31m-[m
+         this.direction = direction.div(direction.getNorm());[m
+ [m
+         this.pid = new PIDController(kP * 1.5, kI, kD);[m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/vision/GoogleTagManager.java b/src/main/java/org/usfirst/frc4904/robot/vision/GoogleTagManager.java[m
+[1mindex bfe92ce..0db97f0 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/vision/GoogleTagManager.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/vision/GoogleTagManager.java[m
+[36m@@ -13,6 +13,7 @@[m [mimport com.fasterxml.jackson.databind.ObjectMapper;[m
+ [m
+ import edu.wpi.first.math.geometry.Rotation2d;[m
+ import edu.wpi.first.math.geometry.Translation3d;[m
+[32m+[m[32mimport edu.wpi.first.wpilibj.Timer;[m
+ [m
+ public class GoogleTagManager {[m
+     private final HttpClient client;[m
+[36m@@ -34,7 +35,9 @@[m [mpublic class GoogleTagManager {[m
+         String json;[m
+ [m
+         try {[m
+[32m+[m[32m            double start = Timer.getFPGATimestamp();[m
+             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());[m
+[32m+[m[32m            System.out.println("tag get time (ms): " + (Timer.getFPGATimestamp() - start) * 1000);[m
+             json = response.body();[m
+         } catch (IOException | InterruptedException e) {[m
+             System.out.println("google tag manager fetching error!!!\n" + e.getClass().getName() + ": " + e.getMessage());[m
+[36m@@ -52,7 +55,7 @@[m [mpublic class GoogleTagManager {[m
+                 Tag tag = new Tag([m
+                     idPath.isNull() ? -1 : idPath.asInt(),[m
+                     Rotation2d.fromRotations(el.path("rot").asDouble()),[m
+[31m-                    new Translation3d(pos[0], pos[1], pos[2]),[m
+[32m+[m[32m                    new Translation3d(pos[2] - 0.5, pos[0], pos[1]),[m
+                     0[m
+                 );[m
+ [m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/vision/VisionSubsystem.java b/src/main/java/org/usfirst/frc4904/robot/vision/VisionSubsystem.java[m
+[1mindex 83a8b45..8ce1b07 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/vision/VisionSubsystem.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/vision/VisionSubsystem.java[m
+[36m@@ -174,7 +174,7 @@[m [mpublic class VisionSubsystem extends SubsystemBase {[m
+ [m
+         xSpeed = Util.clamp(xSpeed, -MAX_LINEAR_SPEED, MAX_LINEAR_SPEED);[m
+         ySpeed = Util.clamp(ySpeed, -MAX_LINEAR_SPEED, MAX_LINEAR_SPEED);[m
+[31m-        rotSpeed = Util.clamp(rotSpeed, -MAX_ROT_SPEED, MAX_ROT_SPEED);[m
+[32m+[m[32m        rotSpeed = 0; // Util.clamp(rotSpeed, -MAX_ROT_SPEED, MAX_ROT_SPEED);[m
+ [m
+         // command swerve drive[m
+         Component.chassis.driveRobotRelative(xSpeed, ySpeed, rotSpeed);[m

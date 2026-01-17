@@ -101,7 +101,8 @@ public class Robot extends CommandRobotBase {
         double now = Timer.getFPGATimestamp();
         if (now - lastLogTime >= 1) {
             lastLogTime = now;
-            System.out.println("WE MAY HAVE FOUND A TAG: " + Component.gtm.getTags());
+            var tags = Component.gtm.getTags();
+            if (tags.size() > 0) System.out.println("WE FOUND A TAG: " + tags);
             // SmartDashboard.putNumberArray("tag ids: ", Component.gtm.getTags().stream().mapToDouble(tag -> tag.id()).toArray());
         }
         // logging stuff cannot go here. turn back now

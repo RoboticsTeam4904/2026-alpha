@@ -2,6 +2,7 @@ package org.usfirst.frc4904.robot.humaninterface.operators;
 
 import org.usfirst.frc4904.robot.RobotMap;
 import org.usfirst.frc4904.robot.RobotMap.Component;
+import org.usfirst.frc4904.robot.vision.VisionSubsystem.TagGroup;
 import org.usfirst.frc4904.standard.humaninput.Operator;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -22,6 +23,8 @@ public class DefaultOperator extends Operator {
         var xyJoystick = RobotMap.HumanInput.Driver.xyJoystick;
         var turnJoystick = RobotMap.HumanInput.Driver.turnJoystick;
 
+        turnJoystick.button1.whileTrue(Component.vision.c_align(TagGroup.ANY, 0));
+
         // opJoystick.button11.whileTrue(Component.shooter.c_shoot());
         // opJoystick.button11.onFalse(Component.shooter.c_stopShoot());
 
@@ -30,5 +33,5 @@ public class DefaultOperator extends Operator {
             @Override public boolean runsWhenDisabled() { return true; };
         });
     }
-    
+
 }

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.Timer;
 
 public class GoogleTagManager {
     private final HttpClient client;
@@ -34,7 +35,9 @@ public class GoogleTagManager {
         String json;
 
         try {
+            double start = Timer.getFPGATimestamp();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("tag get time (ms): " + (Timer.getFPGATimestamp() - start) * 1000);
             json = response.body();
         } catch (IOException | InterruptedException e) {
             System.out.println("google tag manager fetching error!!!\n" + e.getClass().getName() + ": " + e.getMessage());
@@ -52,7 +55,7 @@ public class GoogleTagManager {
                 Tag tag = new Tag(
                     idPath.isNull() ? -1 : idPath.asInt(),
                     Rotation2d.fromRotations(el.path("rot").asDouble()),
-                    new Translation3d(pos[2], pos[0], pos[1]),
+                    new Translation3d(pos[2] - 0.5, pos[0], pos[1]),
                     0
                 );
 

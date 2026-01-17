@@ -84,10 +84,7 @@ class RotationController {
         Translation2d direction
     ) {
         this.motor = motor;
-
         this.encoder = encoder;
-        System.out.println("ENC HALP "+encoder.get());
-
         this.direction = direction.div(direction.getNorm());
 
         this.pid = new PIDController(kP * 1.5, kI, kD);

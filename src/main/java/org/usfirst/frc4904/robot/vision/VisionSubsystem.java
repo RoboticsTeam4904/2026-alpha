@@ -176,7 +176,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         xSpeed = Util.clamp(xSpeed, -MAX_LINEAR_SPEED, MAX_LINEAR_SPEED);
         ySpeed = Util.clamp(ySpeed, -MAX_LINEAR_SPEED, MAX_LINEAR_SPEED);
-        rotSpeed = Util.clamp(rotSpeed, -MAX_ROT_SPEED, MAX_ROT_SPEED);
+        rotSpeed = 0; // Util.clamp(rotSpeed, -MAX_ROT_SPEED, MAX_ROT_SPEED);
 
         // command swerve drive
         Component.chassis.driveRobotRelative(xSpeed, ySpeed, rotSpeed);
